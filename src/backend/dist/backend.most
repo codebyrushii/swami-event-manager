@@ -1,0 +1,226 @@
+// Version: 3.0.0
+type BookingId__140209672 = BookingId__572944220;
+type BookingId__437082877 = BookingId__572944220;
+type BookingId__572944220 = Text;
+type BookingId__892708521 = BookingId__572944220;
+type BookingId__955655396 = BookingId__572944220;
+type BookingStatus__10176221 = BookingStatus__96719981;
+type BookingStatus__96719981 = {#Cancelled; #Completed; #Confirmed; #Pending};
+type Booking__628731632 =
+  {
+    clientId : Principal;
+    clientNotes : Text;
+    createdAt : Nat;
+    equipmentIds : [EquipmentId__521624382];
+    eventDate : Nat;
+    eventType : Text;
+    id : BookingId__892708521;
+    location : Text;
+    packageId : ?PackageId__767124779;
+    paymentStatus : PaymentStatus__619471249;
+    status : BookingStatus__10176221;
+    totalPrice : Nat;
+    updatedAt : Nat
+  };
+type ChecklistItem__307357187 =
+  {assignedStaff : Text; completed : Bool; id : Text; item : Text};
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type DispatchStatus__1068946285 = {#dispatched; #pending; #returned};
+type DispatchStatus__309922983 = DispatchStatus__1068946285;
+type EquipmentId__190142757 = EquipmentId__557226834;
+type EquipmentId__405932155 = EquipmentId__557226834;
+type EquipmentId__521624382 = EquipmentId__557226834;
+type EquipmentId__557226834 = Text;
+type EquipmentStatus__363133831 = EquipmentStatus__995620654;
+type EquipmentStatus__995620654 = {#Available; #Booked; #Maintenance};
+type Equipment__42685460 =
+  {
+    availableQuantity : Nat;
+    category : Text;
+    id : EquipmentId__405932155;
+    maintenanceNotes : Text;
+    name : Text;
+    qrCodeData : Text;
+    status : EquipmentStatus__363133831;
+    totalQuantity : Nat;
+    unitPrice : Nat
+  };
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type LogisticsId__1023358848 = LogisticsId__354088167;
+type LogisticsId__354088167 = Text;
+type Logistics__847103316 =
+  {
+    bookingId : BookingId__955655396;
+    checklist : [ChecklistItem__307357187];
+    createdAt : Nat;
+    dispatchStatus : DispatchStatus__309922983;
+    id : LogisticsId__1023358848;
+    updatedAt : Nat
+  };
+type Map__158565046<K, V> = Map__297112838<K, V>;
+type Map__297112838<K, V> =
+  {var root : Node__46230540<K, V>; var size : Nat__490723111};
+type Map__605269027<K, V> = Map__158565046<K, V>;
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type OldBookingStatus__846941108 =
+  {#Cancelled; #Completed; #Confirmed; #Pending};
+type OldBooking__221110599 =
+  {
+    clientId : Principal;
+    clientNotes : Text;
+    createdAt : Nat;
+    equipmentIds : [Text];
+    eventDate : Nat;
+    eventType : Text;
+    id : Text;
+    location : Text;
+    packageId : ?Text;
+    status : OldBookingStatus__846941108;
+    totalPrice : Nat;
+    updatedAt : Nat
+  };
+type PackageEquipmentItem__792445859 =
+  {equipmentId : EquipmentId__190142757; quantity : Nat};
+type PackageId__560451849 = PackageId__581373409;
+type PackageId__581373409 = Text;
+type PackageId__767124779 = PackageId__581373409;
+type Package__608961851 =
+  {
+    description : Text;
+    equipmentItems : [PackageEquipmentItem__792445859];
+    id : PackageId__560451849;
+    isActive : Bool;
+    name : Text;
+    totalPrice : Nat
+  };
+type PaymentId__1028686908 = Text;
+type PaymentId__722191657 = PaymentId__1028686908;
+type PaymentStatus__1050999476 = {#paid; #partiallyPaid; #unpaid};
+type PaymentStatus__299084309 = PaymentStatus__1050999476;
+type PaymentStatus__619471249 = PaymentStatus__1050999476;
+type Payment__944866998 =
+  {
+    amount : Nat;
+    bookingId : BookingId__140209672;
+    createdAt : Nat;
+    id : PaymentId__722191657;
+    status : PaymentStatus__299084309;
+    stripePaymentIntentId : Text
+  };
+type StaffAvailability__457648399 = StaffAvailability__509720474;
+type StaffAvailability__509720474 = {#Available; #Unavailable};
+type StaffId__1037175657 = StaffId__126722056;
+type StaffId__126722056 = Text;
+type Staff__191166072 =
+  {
+    assignedEventIds : [BookingId__437082877];
+    availabilityStatus : StaffAvailability__457648399;
+    email : Text;
+    id : StaffId__1037175657;
+    name : Text;
+    phone : Text;
+    role : Text
+  };
+type UserProfile__446616884 =
+  {email : Text; name : Text; phone : Text; role : UserRole__769843444};
+type UserRole__1073662873 = {#admin; #guest; #user};
+type UserRole__769843444 = {#admin; #client; #staff};
+actor ({
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__605269027<Principal, UserRole__1073662873>
+    };
+  stable bookingCounter : {var count : Nat};
+  in bookings : Map__605269027<Text, OldBooking__221110599>;
+  stable checklistItemCounter : {var count : Nat};
+  stable equipment :
+    {
+      var root : Node__46230540<EquipmentId__557226834, Equipment__42685460>;
+      var size : Nat__490723111
+    };
+  stable equipmentCounter : {var count : Nat};
+  stable logisticsCounter : {var count : Nat};
+  stable logisticsStore :
+    {
+      var root : Node__46230540<LogisticsId__354088167, Logistics__847103316>;
+      var size : Nat__490723111
+    };
+  stable packageCounter : {var count : Nat};
+  stable packages :
+    {
+      var root : Node__46230540<PackageId__581373409, Package__608961851>;
+      var size : Nat__490723111
+    };
+  stable paymentCounter : {var count : Nat};
+  stable payments :
+    {
+      var root : Node__46230540<PaymentId__1028686908, Payment__944866998>;
+      var size : Nat__490723111
+    };
+  stable staff :
+    {
+      var root : Node__46230540<StaffId__126722056, Staff__191166072>;
+      var size : Nat__490723111
+    };
+  stable staffCounter : {var count : Nat};
+  stable userProfiles :
+    {
+      var root : Node__46230540<Principal, UserProfile__446616884>;
+      var size : Nat__490723111
+    }
+}, {
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__605269027<Principal, UserRole__1073662873>
+    };
+  stable bookingCounter : {var count : Nat};
+  stable bookings :
+    {
+      var root : Node__46230540<BookingId__572944220, Booking__628731632>;
+      var size : Nat__490723111
+    };
+  stable checklistItemCounter : {var count : Nat};
+  stable equipment :
+    {
+      var root : Node__46230540<EquipmentId__557226834, Equipment__42685460>;
+      var size : Nat__490723111
+    };
+  stable equipmentCounter : {var count : Nat};
+  stable logisticsCounter : {var count : Nat};
+  stable logisticsStore :
+    {
+      var root : Node__46230540<LogisticsId__354088167, Logistics__847103316>;
+      var size : Nat__490723111
+    };
+  stable packageCounter : {var count : Nat};
+  stable packages :
+    {
+      var root : Node__46230540<PackageId__581373409, Package__608961851>;
+      var size : Nat__490723111
+    };
+  stable paymentCounter : {var count : Nat};
+  stable payments :
+    {
+      var root : Node__46230540<PaymentId__1028686908, Payment__944866998>;
+      var size : Nat__490723111
+    };
+  stable staff :
+    {
+      var root : Node__46230540<StaffId__126722056, Staff__191166072>;
+      var size : Nat__490723111
+    };
+  stable staffCounter : {var count : Nat};
+  stable userProfiles :
+    {
+      var root : Node__46230540<Principal, UserProfile__446616884>;
+      var size : Nat__490723111
+    }
+}) ;

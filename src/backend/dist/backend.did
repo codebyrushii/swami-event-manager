@@ -1,0 +1,276 @@
+type UserRole__1 = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type UserRole = 
+ variant {
+   admin;
+   client;
+   staff;
+ };
+type UserProfile = 
+ record {
+   email: text;
+   name: text;
+   phone: text;
+   role: UserRole;
+ };
+type UpdatePackageRequest = 
+ record {
+   description: text;
+   equipmentItems: vec PackageEquipmentItem;
+   isActive: bool;
+   name: text;
+   totalPrice: nat;
+ };
+type UpdateEquipmentRequest = 
+ record {
+   category: text;
+   maintenanceNotes: text;
+   name: text;
+   status: EquipmentStatus;
+   totalQuantity: nat;
+   unitPrice: nat;
+ };
+type TopEquipmentItem = 
+ record {
+   count: nat;
+   equipmentId: text;
+   name: text;
+ };
+type StaffId = text;
+type StaffAvailability = 
+ variant {
+   Available;
+   Unavailable;
+ };
+type Staff = 
+ record {
+   assignedEventIds: vec BookingId;
+   availabilityStatus: StaffAvailability;
+   email: text;
+   id: StaffId;
+   name: text;
+   phone: text;
+   role: text;
+ };
+type QuotationItem = 
+ record {
+   itemId: text;
+   itemName: text;
+   quantity: nat;
+   subtotal: nat;
+   unitPrice: nat;
+ };
+type Quotation = 
+ record {
+   bookingId: BookingId;
+   generatedAt: nat;
+   items: vec QuotationItem;
+   totalAmount: nat;
+ };
+type PaymentStatus = 
+ variant {
+   paid;
+   partiallyPaid;
+   unpaid;
+ };
+type PaymentId = text;
+type Payment = 
+ record {
+   amount: nat;
+   bookingId: BookingId;
+   createdAt: nat;
+   id: PaymentId;
+   status: PaymentStatus;
+   stripePaymentIntentId: text;
+ };
+type PackageId = text;
+type PackageEquipmentItem = 
+ record {
+   equipmentId: EquipmentId;
+   quantity: nat;
+ };
+type Package = 
+ record {
+   description: text;
+   equipmentItems: vec PackageEquipmentItem;
+   id: PackageId;
+   isActive: bool;
+   name: text;
+   totalPrice: nat;
+ };
+type MonthlyRevenue = 
+ record {
+   month: nat;
+   revenue: nat;
+   year: nat;
+ };
+type LogisticsId = text;
+type Logistics = 
+ record {
+   bookingId: BookingId;
+   checklist: vec ChecklistItem;
+   createdAt: nat;
+   dispatchStatus: DispatchStatus;
+   id: LogisticsId;
+   updatedAt: nat;
+ };
+type EventTypeCount = 
+ record {
+   count: nat;
+   eventType: text;
+ };
+type EquipmentStatus = 
+ variant {
+   Available;
+   Booked;
+   Maintenance;
+ };
+type EquipmentId = text;
+type Equipment = 
+ record {
+   availableQuantity: nat;
+   category: text;
+   id: EquipmentId;
+   maintenanceNotes: text;
+   name: text;
+   qrCodeData: text;
+   status: EquipmentStatus;
+   totalQuantity: nat;
+   unitPrice: nat;
+ };
+type DispatchStatus = 
+ variant {
+   dispatched;
+   pending;
+   returned;
+ };
+type DashboardStats = 
+ record {
+   activeEvents: nat;
+   equipmentUtilizationPct: nat;
+   pendingConfirmations: nat;
+   revenueThisMonth: nat;
+   totalBookings: nat;
+   totalEquipment: nat;
+ };
+type CreateStaffRequest = 
+ record {
+   email: text;
+   name: text;
+   phone: text;
+   role: text;
+ };
+type CreatePackageRequest = 
+ record {
+   description: text;
+   equipmentItems: vec PackageEquipmentItem;
+   name: text;
+   totalPrice: nat;
+ };
+type CreateEquipmentRequest = 
+ record {
+   category: text;
+   maintenanceNotes: text;
+   name: text;
+   totalQuantity: nat;
+   unitPrice: nat;
+ };
+type CreateBookingRequest = 
+ record {
+   clientNotes: text;
+   equipmentIds: vec EquipmentId;
+   eventDate: nat;
+   eventType: text;
+   location: text;
+   packageId: opt PackageId;
+ };
+type ChecklistItem = 
+ record {
+   assignedStaff: text;
+   completed: bool;
+   id: text;
+   item: text;
+ };
+type BookingStatus = 
+ variant {
+   Cancelled;
+   Completed;
+   Confirmed;
+   Pending;
+ };
+type BookingId = text;
+type Booking = 
+ record {
+   clientId: principal;
+   clientNotes: text;
+   createdAt: nat;
+   equipmentIds: vec EquipmentId;
+   eventDate: nat;
+   eventType: text;
+   id: BookingId;
+   location: text;
+   packageId: opt PackageId;
+   paymentStatus: PaymentStatus;
+   status: BookingStatus;
+   totalPrice: nat;
+   updatedAt: nat;
+ };
+service : {
+  _initializeAccessControl: () -> ();
+  addChecklistItem: (id: LogisticsId, item: text, assignedStaff: text) ->
+   (bool);
+  assignCallerUserRole: (user: principal, role: UserRole__1) -> ();
+  assignStaffToEvent: (staffId: StaffId, eventId: BookingId) -> (bool);
+  createBooking: (req: CreateBookingRequest) -> (BookingId);
+  createEquipment: (req: CreateEquipmentRequest) -> (EquipmentId);
+  createLogistics: (bookingId: BookingId) -> (LogisticsId);
+  createPackage: (req: CreatePackageRequest) -> (PackageId);
+  createPayment: (bookingId: BookingId, amount: nat, stripePaymentIntentId:
+   text) -> (PaymentId);
+  createStaff: (req: CreateStaffRequest) -> (StaffId);
+  deleteEquipment: (id: EquipmentId) -> (bool);
+  deletePackage: (id: PackageId) -> (bool);
+  getActivePackages: () -> (vec Package) query;
+  getAllLogistics: () -> (vec Logistics) query;
+  getAllPackages: () -> (vec Package) query;
+  getAllPayments: () -> (vec Payment) query;
+  getAllStaff: () -> (vec Staff) query;
+  getAvailableEquipment: (eventDate: nat) -> (vec Equipment) query;
+  getBooking: (id: BookingId) -> (opt Booking) query;
+  getBookings: () -> (vec Booking) query;
+  getBookingsByEventType: () -> (vec EventTypeCount) query;
+  getCallerUserProfile: () -> (opt UserProfile) query;
+  getCallerUserRole: () -> (UserRole__1) query;
+  getDashboardStats: () -> (DashboardStats) query;
+  getEquipment: (statusFilter: opt EquipmentStatus) -> (vec Equipment) query;
+  getEquipmentById: (id: EquipmentId) -> (opt Equipment) query;
+  getLogistics: (bookingId: BookingId) -> (opt Logistics) query;
+  getPackageById: (id: PackageId) -> (opt Package) query;
+  getPaymentsByBooking: (bookingId: BookingId) -> (vec Payment) query;
+  getQuotation: (bookingId: BookingId) -> (opt Quotation) query;
+  getRevenueByMonth: () -> (vec MonthlyRevenue) query;
+  getStaffById: (id: StaffId) -> (opt Staff) query;
+  getTopEquipment: (limit: nat) -> (vec TopEquipmentItem) query;
+  getUserProfile: (user: principal) -> (opt UserProfile) query;
+  isCallerAdmin: () -> (bool) query;
+  saveCallerUserProfile: (profile: UserProfile) -> ();
+  seedEquipment: () -> ();
+  seedPackages: () -> ();
+  seedStaff: () -> ();
+  toggleEquipmentMaintenance: (id: EquipmentId, notes: text) -> (bool);
+  unassignStaffFromEvent: (staffId: StaffId, eventId: BookingId) -> (bool);
+  updateBookingStatus: (id: BookingId, newStatus: BookingStatus) -> (bool);
+  updateChecklistItem: (id: LogisticsId, checklistItemId: text, completed:
+   bool, newItemText: opt text) -> (bool);
+  updateEquipment: (id: EquipmentId, req: UpdateEquipmentRequest) -> (bool);
+  updateLogisticsStatus: (id: LogisticsId, newStatus: DispatchStatus) ->
+   (bool);
+  updatePackage: (id: PackageId, req: UpdatePackageRequest) -> (bool);
+  updatePaymentStatus: (id: PaymentId, newStatus: PaymentStatus) -> (bool);
+  updateStaffAvailability: (staffId: StaffId, status: StaffAvailability) ->
+   (bool);
+}

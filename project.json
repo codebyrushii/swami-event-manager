@@ -1,0 +1,27 @@
+{
+  "overview": "Swami Event Manager is a complete business management platform for Swami Light & Sound — a sound and lighting rental company. It helps manage bookings, equipment inventory, staff assignments, packages, invoicing with Stripe payments, logistics tracking, and analytics — all from a mobile-first interface.",
+  "features": [
+    "Role-based access for Admin, Staff, and Clients",
+    "Multi-step booking flow with real-time quotations",
+    "Equipment inventory with QR codes and availability tracking",
+    "Package builder with predefined and custom packages",
+    "Stripe invoice payments with partial/advance payment support",
+    "Analytics dashboard with revenue trends and equipment insights",
+    "Logistics tracking with dispatch status and checklists",
+    "Event calendar with staff scheduling",
+    "Client portal for booking history and quotations",
+    "Dark and light mode, mobile-first UI"
+  ],
+  "category": "business-management",
+  "tags": [
+    "event-management",
+    "inventory",
+    "booking",
+    "stripe-payments",
+    "analytics",
+    "logistics",
+    "mobile-first",
+    "admin-dashboard"
+  ],
+  "last_updated": "2026-04-23T19:43:59.320Z"
+}
